@@ -1,0 +1,53 @@
+server:
+    port: 8081
+    servlet:
+        context-path: /product-svc
+spring:
+    application:
+        name: nab-product-service
+    profiles:
+        active: dev
+    datasource:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/nab_db
+        username: root
+        password: 123456
+        jpa:
+            database-platform: org.hibernate.dialect.MySQL5Dialect
+            generate-ddl: true
+            hibernate:
+                ddl-auto: update
+            properties:
+                hibernate:
+                    dialect: org.hibernate.dialect.MySQLDialect
+    kafka:
+        consumer:
+            bootstrap-servers: localhost:9092
+            group-id: nab_group_id
+            auto-offset-reset: earliest
+            key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+            value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+        producer:
+            bootstrap-servers: localhost:9092
+            key-serializer: org.apache.kafka.common.serialization.StringSerializer
+            value-serializer: org.apache.kafka.common.serialization.StringSerializer
+eureka:
+    client:
+        serviceUrl:
+            defaultZone: ${EUREKA_URI:http://admin:admin@localhost:8761/eureka}
+    instance:
+        preferIpAddress: true
+
+logging:
+    level:
+        root: INFO
+        com: INFO
+        org:
+            springframework:
+                data:
+                    mongodb:
+                        core:
+                            MongoTemplate: INFO
+                    document:
+                        mongodb: INFO

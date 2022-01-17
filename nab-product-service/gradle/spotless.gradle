@@ -1,0 +1,11 @@
+//apply plugin: "com.diffplug.gradle.spotless"
+//
+//spotless {
+//    java {
+//        removeUnusedImports()
+//        target fileTree('.') {
+//            include '**/*.java'
+//        }
+//        eclipse().configFile 'eclipse-java-google-style.xml'
+//    }
+//}
