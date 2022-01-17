@@ -1,0 +1,90 @@
+buildscript {
+	ext {
+		springBootVersion = '2.5.2'
+	}
+	repositories {
+		mavenCentral()
+		maven {
+			url "https://plugins.gradle.org/m2/"
+		}
+		maven { url 'https://maven.springframework.org/milestone/' }
+	}
+	dependencies {
+		classpath "com.diffplug.spotless:spotless-plugin-gradle:5.14.1"
+	}
+}
+
+plugins {
+	id 'org.springframework.boot' version '2.5.2'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id "com.diffplug.spotless" version "5.14.1"
+	id 'java'
+}
+
+group = 'com.nab'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+repositories {
+	mavenCentral()
+	maven {
+		url "https://plugins.gradle.org/m2/"
+	}
+	maven { url 'https://maven.springframework.org/milestone/' }
+	flatDir {
+		dirs 'libs'
+	}
+}
+
+ext {
+	set('springCloudVersion', "2020.0.3")
+}
+dependencies {
+	implementation (
+			'org.springframework.boot:spring-boot-starter-web',
+			'org.springframework.boot:spring-boot-starter-jdbc',
+			'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client',
+			'org.springframework.cloud:spring-cloud-starter-openfeign',
+			'mysql:mysql-connector-java',
+			'org.springframework:spring-web',
+			'org.springframework.kafka:spring-kafka',
+			'org.apache.commons:commons-lang3:3.12.0',
+			'org.projectlombok:lombok:1.18.4'
+	)
+
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'io.rest-assured:spring-mock-mvc'
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+	testImplementation('junit:junit')
+	testImplementation 'org.junit.platform:junit-platform-commons:1.5.2'
+	testImplementation("org.junit.jupiter:junit-jupiter-api:5.4.2")
+	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.4.2")
+
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+test {
+	useJUnitPlatform()
+	// Explicitly test with Junit.
+//	useJUnit()
+}
+
+apply plugin: "com.diffplug.spotless"
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+
+spotless {
+	java {
+		toggleOffOn()
+		eclipse().configFile("${project.rootDir}/gradle/eclipse-java-google-style.xml")
+		indentWithSpaces()
+		removeUnusedImports()
+	}
+}
