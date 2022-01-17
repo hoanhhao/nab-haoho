@@ -1,0 +1,89 @@
+buildscript {
+	ext {
+		springBootVersion = '2.5.2'
+	}
+	repositories {
+		mavenCentral()
+		maven {
+			url "https://plugins.gradle.org/m2/"
+		}
+		maven { url 'https://maven.springframework.org/milestone/' }
+		maven { url "https://repo.spring.io/libs-milestone" }
+		maven { url "https://repo.spring.io/libs-snapshot" }
+	}
+	dependencies {
+		classpath "com.diffplug.spotless:spotless-plugin-gradle:5.14.1"
+	}
+}
+
+
+plugins {
+	id 'org.springframework.boot' version '2.5.2'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id "com.diffplug.spotless" version "5.14.1"
+	id 'java'
+}
+
+group = 'com.nab'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+repositories {
+	mavenCentral()
+	flatDir {
+		dirs 'libs'
+	}
+}
+
+ext {
+	set('springCloudVersion', "2020.0.3")
+}
+ext['spring-security.version']='5.5.1'
+ext['spring.version']='5.3.8'
+
+dependencies {
+	implementation (
+			'org.springframework.boot:spring-boot-starter-web',
+			'org.springframework.boot:spring-boot-starter-security', // this makes Eureka authenticate user
+			'org.springframework.cloud:spring-cloud-starter-netflix-eureka-server'
+	)
+	implementation (
+			'org.apache.commons:commons-lang3:3.12.0',
+			'net.sourceforge.htmlunit:htmlunit:2.29',
+			'javax.mail:mail:1.4.7',
+			'org.jsoup:jsoup:1.10.2',
+			'io.jsonwebtoken:jjwt:0.9.1',
+			'javax.xml.bind:jaxb-api'
+	)
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+test {
+	useJUnitPlatform()
+}
+
+apply plugin: "com.diffplug.spotless"
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+
+spotless {
+	java {
+		toggleOffOn()
+		eclipse().configFile("${project.rootDir}/gradle/eclipse-java-google-style.xml")
+		indentWithSpaces()
+		removeUnusedImports()
+	}
+}

@@ -1,0 +1,23 @@
+server:
+    port: 8761
+eureka:
+    instance:
+        hostname: localhost
+    client:
+        registerWithEureka: false
+        fetchRegistry: false
+        serviceUrl:
+            defaultZone: http://admin:admin@${eureka.instance.hostname}:${server.port}/eureka/
+spring:
+    application:
+        name: nab-eureka
+    profiles:
+        active: dev
+    security:
+        profiles: primary
+
+logging:
+    level:
+        root: INFO
+        com: INFO
+
